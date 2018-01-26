@@ -9,6 +9,7 @@ var http = require('http'),
     errorhandler = require('errorhandler'),
     mongoose = require('mongoose'),
     cookieParser = require('cookie-parser'),
+    expressJwt = require('express-jwt'),
     config = require('./config');
 
 var isProduction = process.env.NODE_ENV === 'production';
@@ -17,6 +18,8 @@ var isProduction = process.env.NODE_ENV === 'production';
 var app = express();
 
 app.use(cors());
+
+app.use('/api', expressJwt({secret: config.secret}));
 
 app.use(cookieParser({"secret": config.secret}));
 
