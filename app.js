@@ -7,7 +7,9 @@ var http = require('http'),
     cors = require('cors'),
     passport = require('passport'),
     errorhandler = require('errorhandler'),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    cookieParser = require('cookie-parser'),
+    config = require('./config');
 
 var isProduction = process.env.NODE_ENV === 'production';
 
@@ -15,6 +17,8 @@ var isProduction = process.env.NODE_ENV === 'production';
 var app = express();
 
 app.use(cors());
+
+app.use(cookieParser({"secret": config.secret}));
 
 // Normal express config defaults
 app.use(require('morgan')('dev'));
