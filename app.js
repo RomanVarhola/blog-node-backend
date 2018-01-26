@@ -19,7 +19,7 @@ var app = express();
 
 app.use(cors());
 
-app.use('/api', expressJwt({secret: config.secret}));
+//app.use('/api', expressJwt({secret: config.secret}));
 
 app.use(cookieParser({"secret": config.secret}));
 

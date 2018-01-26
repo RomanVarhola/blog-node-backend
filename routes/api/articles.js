@@ -17,7 +17,7 @@ router.param('article', function(req, res, next, slug) {
     }).catch(next);
 });
 
-router.get('/', auth.optional, function(req, res, next) {
+router.get('/', function(req, res, next) {
   var query = {};
   var limit = 20;
   var offset = 0;
