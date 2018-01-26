@@ -31,10 +31,10 @@ if (!isProduction) {
 }
 
 if(isProduction){
-  mongoose.connect(process.env.MONGODB_URI);
+  mongoose.connect('mongodb://admin:12345678@ds159707.mlab.com:59707/blog?readPreference=primary');
 } else {
-  //mongoose.connect('mongodb://blog:12345678@ds159707.mlab.com:59707/blog');
-  mongoose.connect('mongodb://localhost/conduit');
+  mongoose.connect('mongodb://admin:12345678@ds159707.mlab.com:59707/blog?readPreference=primary');
+  //mongoose.connect('mongodb://localhost/conduit');
   mongoose.set('debug', true);
 }
 
