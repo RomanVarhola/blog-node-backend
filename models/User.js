@@ -49,4 +49,14 @@ UserSchema.methods.toProfileJSONFor = function(user){
   };
 };
 
+UserSchema.methods.toJSON = function(){
+  return {
+    _id: this._id,
+    username: this.username,
+    email: this.email,
+    createdAt: this.createdAt,
+    updatedAt: this.updatedAt
+  };
+};
+
 mongoose.model('User', UserSchema);

@@ -4,6 +4,21 @@ var passport = require('passport');
 var User = mongoose.model('User');
 var auth = require('../auth');
 
+router.get('/users', function(req, res, next) {
+  Promise.all([
+    User.find(), User.count().exec()]).then(function(results) {
+      var users = results[0];
+      var usersCount = results[1];
+
+      res.json({
+        users: users.map(function(user){
+          return user.toJSON();
+        }),
+        usersCount: usersCount
+      })
+    }).catch(next);
+});
+
 router.get('/user', auth.required, function(req, res, next){
   User.findById(req.payload.id).then(function(user){
     if(!user){ return res.sendStatus(401); }

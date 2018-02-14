@@ -4,7 +4,7 @@
   "description": "conduit on node",
   "main": "app.js",
   "scripts": {
-    "start": "node ./app.js",
+    "start": "nodemon ./app.js",
     "dev": "nodemon ./app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -35,6 +35,6 @@
     "underscore": "1.8.3"
   },
   "devDependencies": {
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.14.12"
   }
 }

@@ -21,33 +21,44 @@ router.get('/', function(req, res, next) {
   var query = {};
   var limit = 20;
   var offset = 0;
+  var sort = 'desc';
+  var authors = [];
 
   if(typeof req.query.limit !== 'undefined'){
     limit = req.query.limit;
+  }
+
+  if(typeof req.query.sort !== 'undefined'){
+    sort = req.query.sort;
   }
 
   if(typeof req.query.offset !== 'undefined'){
     offset = req.query.offset;
   }
 
-  if( typeof req.query.tag !== 'undefined' ){
-    query.tagList = {"$in" : [req.query.tag]};
+  if(typeof req.query.author !== 'undefined'){
+    authors = req.query.author.split(',');
   }
 
   Promise.all([
-    req.query.author ? User.findOne({username: req.query.author}) : null
+    req.query.author ? User.find({username: {$in: authors}}) : null
   ]).then(function(results){
-    var author = results[0];
-    
-    if(author){
-      query.author = author._id;
+    var authors = results[0];
+    var author_ids = [];
+
+    if(authors){
+      for (var key in authors) {
+        author_ids.push(authors[key]._id);
+      }
+
+      query = {author: {$in: author_ids}};
     }
 
     return Promise.all([
       Article.find(query)
         .limit(Number(limit))
         .skip(Number(offset))
-        .sort({createdAt: 'desc'})
+        .sort({createdAt: sort})
         .populate('author')
         .exec(),
       Article.count(query).exec(),
@@ -65,42 +76,6 @@ router.get('/', function(req, res, next) {
       });
     });
   }).catch(next);
-});
-
-router.get('/feed', auth.required, function(req, res, next) {
-  var limit = 20;
-  var offset = 0;
-
-  if(typeof req.query.limit !== 'undefined'){
-    limit = req.query.limit;
-  }
-
-  if(typeof req.query.offset !== 'undefined'){
-    offset = req.query.offset;
-  }
-
-  User.findById(req.payload.id).then(function(user){
-    if (!user) { return res.sendStatus(401); }
-
-    Promise.all([
-      Article.find({ author: {$in: user}})
-        .limit(Number(limit))
-        .skip(Number(offset))
-        //.populate('author')
-        .exec(),
-      Article.count({ author: {$in: user}})
-    ]).then(function(results){
-      var articles = results[0];
-      var articlesCount = results[1];
-
-      return res.json({
-        articles: articles.map(function(article){
-          return article.toJSONFor(user);
-        }),
-        articlesCount: articlesCount
-      });
-    }).catch(next);
-  });
 });
 
 router.post('/', auth.required, function(req, res, next) {
